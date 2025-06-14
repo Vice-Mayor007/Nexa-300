@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MentorAI | Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+    <style>
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            padding: 20px;
+        }
+
+        .course-card {
+            background: rgba(255, 255, 255, 0.555);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .course-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .course-icon {
+            width: 50px;
+            height: 50px;
+            background: #f4007a18;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+        }
+
+        .course-icon i {
+            font-size: 24px;
+            color: #f4007a;
+        }
+
+        .course-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .course-description {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .course-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .course-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .learn-btn {
+            background: #f4007a;
+            color: white;
+        }
+
+        .learn-btn:hover {
+            background: #d4006a;
+        }
+
+        .ai-btn {
+            background: #f4007a18;
+            color: #f4007a;
+        }
+
+        .ai-btn:hover {
+            background: #f4007a2a;
+        }
+
+        .ai-chat-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #4a5568;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background: #f4007a18;
+            margin-left: auto;
+        }
+
+        .ai-message {
+            background: #f8fafc;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .chat-input button {
+            padding: 12px 24px;
+            background: #f4007a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .chat-input button:hover {
+            background: #d4006a;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px;
+            background: white;
+            border-radius: 16px;
+            margin: 20px;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #f4007a;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            color: #4a5568;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .learning-resources {
+            padding: 20px;
+        }
+
+        .resource-section {
+            margin-bottom: 40px;
+        }
+
+        .resource-section h3 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .video-grid, .website-grid, .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .video-card, .website-card, .resource-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .video-card:hover, .website-card:hover, .resource-card:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 6px 16px rgba(58, 134, 255, 0.13);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(244, 0, 122, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5em;
+            pointer-events: none;
+        }
+
+        .website-icon, .resource-icon {
+            width: 40px;
+            height: 40px;
+            background: #f4007a18;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            color: #f4007a;
+            font-size: 1.3em;
+        }
+
+        .watch-btn, .visit-btn, .download-btn {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            background: #f4007a;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            text-decoration: none;
+        }
+
+        .watch-btn:hover, .visit-btn:hover, .download-btn:hover {
+            background: #d4006a;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 40px;
+            color: #e53e3e;
+        }
+
+        .error-message i {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: #4a5568;
+        }
+
+        .loading-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #f4007a;
+        }
+
+        .overview-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .overview-content p {
+            line-height: 1.6;
+            color: #2d3748;
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .topic-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .topic-card h4 {
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+
+        .topic-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .topic-card li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        .topic-card li:last-child {
+            border-bottom: none;
+        }
+
+        .video-group, .website-group, .resource-group {
+            margin-bottom: 24px;
+        }
+
+        .video-group h4, .website-group h4, .resource-group h4 {
+            color: #2d3748;
+            margin-bottom: 16px;
+        }
+
+        .resource-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .resource-list li {
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            color: #4a5568;
+        }
+
+        .empty-section {
+            text-align: center;
+            color: #b0b0b0;
+            padding: 24px 0;
+            font-size: 1.1em;
+        }
+
+        .dashboard-main-flex {
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+        }
+        .dashboard-tabs {
+            margin-bottom:24px;
+            display:flex;
+            gap:12px;
+            flex-wrap:wrap;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #3a86ff;
+            font-size: 1.08em;
+            text-align: left;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .tab-btn.active, .tab-btn:hover {
+            background: #f0f4ff;
+            color: #f4007a;
+            font-weight: 600;
+        }
+        .tab-section { display: none; }
+        .tab-section.active { display: block; }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .card h3 {
+            color: #1a202c;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 24px;
+            background: #f4007a;
+            border-radius: 2px;
+        }
+
+        .card input[type="text"],
+        .card input[type="date"],
+        .card textarea,
+        .card select {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .card input[type="text"]:focus,
+        .card input[type="date"]:focus,
+        .card textarea:focus,
+        .card select:focus {
+            border-color: #f4007a;
+            box-shadow: 0 0 0 3px rgba(244, 0, 122, 0.1);
+            outline: none;
+        }
+
+        .card textarea {
+            min-height: 140px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .card button {
+            background: #f4007a;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(244, 0, 122, 0.2);
+        }
+
+        .card button:hover {
+            background: #d4006a;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(244, 0, 122, 0.3);
+        }
+
+        .card button:active {
+            transform: translateY(1px);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .card li {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s ease;
+        }
+
+        .card li:hover {
+            background: rgba(244, 0, 122, 0.05);
+        }
+
+        .card li:last-child {
+            border-bottom: none;
+        }
+
+        /* Result areas styling */
+        #ai-helper-answer,
+        #study-plan-result,
+        #notes-ai-result,
+        #flashcard-result,
+        #resource-result,
+        #practice-result,
+        #mood-tip {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border: 1px solid #e2e8f0;
+            line-height: 1.6;
+        }
+
+        /* Loading state */
+        .loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #f4007a;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mood select styling */
+        #mood-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23f4007a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        /* Activity feed styling */
+        #activity-feed-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #activity-feed-list li::before {
+            content: '•';
+            color: #f4007a;
+            font-size: 1.5em;
+        }
+
+        /* Streak counter styling */
+        #streak-days {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #f4007a;
+        }
+
+        /* Q&A styling */
+        #qna-list li {
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            padding: 16px;
+        }
+
+        #qna-list li b {
+            color: #f4007a;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .card {
+                padding: 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .card button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3 class="logo">MentorAI</h3>
+                <i class="fa-solid fa-times sidebar-close" id="sidebar-close"></i>
+            </div>
+            <div class="sidebar-user">
+                <div class="user-avatar">
+                    <img src="https://ui-avatars.com/api/?name=User&background=random" alt="User Avatar" id="user-avatar">
+                </div>
+                <div class="user-info">
+                    <h4 id="user-name">Loading...</h4>
+                    <p id="user-role">Loading...</p>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a href="/dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="/my-mentors"><i class="fa-solid fa-users"></i> My Mentors</a>
+                </li>
+                <li>
+                    <a href="/ai-chat"><i class="fa-solid fa-robot"></i> AI Assistant</a>
+                </li>
+                 <li>
+                <a href="/logout"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+            </li>
+            </ul>
+            >
+           
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Top Navigation -->
+            <header class="top-navbar">
+                <div class="nav-left">
+                    <i class="fa-solid fa-bars sidebar-toggle" id="sidebar-toggle"></i>
+                    <h2> Dashboard</h2>
+                </div>
+                <div class="nav-right">
+                    <div class="notification-bell">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-count" id="notification-count">0</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <section class="welcome-section">
+                    <div class="welcome-card">
+                        <div class="welcome-text">
+                            <h1>Welcome <span id="welcome-user-name"></span></h1>
+                            <p>Choose any of these features to start your ai powered learning  </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Dashboard Tabs -->
+                <div class="dashboard-tabs">
+                    <button class="tab-btn" onclick="showTab('ai-helper')">AI Helper</button>
+                    <button class="tab-btn" onclick="showTab('study-plan')">Study Plan</button>
+                    <button class="tab-btn" onclick="showTab('activity-feed')">Activity Feed</button>
+                    <button class="tab-btn" onclick="showTab('notes')">Quick Notes</button>
+                    <button class="tab-btn" onclick="showTab('deadlines')">Deadlines</button>
+                    <button class="tab-btn" onclick="showTab('leaderboard')">Streaks</button>
+                    <button class="tab-btn" onclick="showTab('flashcards')">Flashcards</button>
+                    <button class="tab-btn" onclick="showTab('resources')">AI Resources</button>
+
+                </div>
+                <div id="tab-ai-helper" class="tab-section active">
+                    <div class="card">
+                        <h3>AI Study Helper</h3>
+                        <form id="ai-helper-form">
+                            <input type="text" id="ai-helper-input" placeholder="Ask anything about your studies...">
+                            <button type="submit">Ask AI</button>
+                        </form>
+                        <div id="ai-helper-answer"></div>
+                    </div>
+                </div>
+                <div id="tab-study-plan" class="tab-section">
+                    <div class="card">
+                        <h3>Study Plan Generator</h3>
+                        <form id="study-plan-form">
+                            <input type="text" id="study-plan-input" placeholder="Enter subject or topic...">
+                            <button type="submit">Generate Plan</button>
+                        </form>
+                        <div id="study-plan-result"></div>
+                    </div>
+                </div>
+                <div id="tab-activity-feed" class="tab-section">
+                    <div class="card">
+                        <h3>Activity Feed</h3>
+                        <ul id="activity-feed-list"></ul>
+                    </div>
+                </div>
+                <div id="tab-notes" class="tab-section">
+                    <div class="card">
+                        <h3>Quick Notes & AI Summarizer</h3>
+                        <textarea id="notes-input" placeholder="Type your notes here..."></textarea>
+                        <div class="button-group">
+                            <button id="summarize-notes-btn">Summarize with AI</button>
+                            <button id="rephrase-notes-btn">Rephrase with AI</button>
+                        </div>
+                        <div id="notes-ai-result"></div>
+                    </div>
+                </div>
+                <div id="tab-deadlines" class="tab-section">
+                    <div class="card">
+                        <h3>Deadlines & Reminders</h3>
+                        <form id="deadline-form">
+                            <input type="text" id="deadline-input" placeholder="Enter deadline...">
+                            <input type="date" id="deadline-date">
+                            <button type="submit">Add Deadline</button>
+                        </form>
+                        <ul id="deadlines-list"></ul>
+                    </div>
+                </div>
+                <div id="tab-leaderboard" class="tab-section">
+                    <div class="card">
+                        <h3>Study Streaks</h3>
+                        <p>Current Streak: <span id="streak-days">0</span></p>
+                        <button id="streak-btn">Mark Today as Studied</button>
+                    </div>
+                </div>
+                <div id="tab-flashcards" class="tab-section">
+                    <div class="card">
+                        <h3>AI Flashcard Generator</h3>
+                        <form id="flashcard-form">
+                            <input type="text" id="flashcard-input" placeholder="Enter topic for flashcards...">
+                            <button type="submit">Generate Flashcards</button>
+                        </form>
+                        <div id="flashcard-result"></div>
+                    </div>
+                </div>
+                <div id="tab-resources" class="tab-section">
+                    <div class="card">
+                        <h3>AI Resource Recommendations</h3>
+                        <form id="resource-form">
+                            <input type="text" id="resource-input" placeholder="Enter topic for resources...">
+                            <button type="submit">Get Resources</button>
+                        </form>
+                        <div id="resource-result"></div>
+                    </div>
+                </div>
+               
+                
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+       // Sidebar Toggle
+const sidebarToggleBtn = document.getElementById('sidebar-toggle');
+const sidebarCloseBtn = document.getElementById('sidebar-close');
+const sidebar = document.getElementById('sidebar');
+
+sidebarToggleBtn?.addEventListener('click', () => sidebar?.classList.toggle('active'));
+sidebarCloseBtn?.addEventListener('click', () => sidebar?.classList.remove('active'));
+
+// Load user profile information
+const loadUserProfile = async () => {
+    try {
+        const response = await fetch("/api/user/profile", {
+            method: "GET",
+            credentials: "include"
+        });
+        const data = await response.json();
+
+        if (data.success && data.user) {
+            // Update sidebar user info
+            document.getElementById('user-name').textContent = data.user.username;
+            document.getElementById('user-role').textContent = data.user.role.charAt(0).toUpperCase() + data.user.role.slice(1);
+            
+            // Update user avatar
+            const userAvatar = document.getElementById('user-avatar');
+            if (userAvatar) {
+                userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.username)}&background=random&color=fff`;
+            }
+
+            // Update welcome message
+            const welcomeName = document.getElementById('welcome-user-name');
+            if (welcomeName) {
+                welcomeName.textContent = data.user.username;
+            }
+        } else {
+            console.error("Failed to load user profile");
+        }
+    } catch (err) {
+        console.error("Error loading user profile:", err);
+    }
+};
+
+// Load user profile when page loads
+window.addEventListener("DOMContentLoaded", loadUserProfile);
+
+function showEmptyState() {
+    document.getElementById('courseGrid').innerHTML = `
+        <div class="empty-state">
+            <i class="fa-solid fa-book-open"></i>
+            <h3>No Courses Yet</h3>
+            <p>Start your learning journey by enrolling in courses</p>
+            <button onclick="window.location.href='/courses'" class="primary-btn">Browse Courses</button>
+        </div>`;
+}
+
+function displayCourses(courses) {
+    const grid = document.getElementById('courseGrid');
+    grid.innerHTML = courses.map(course => `
+        <div class="course-card">
+            <div class="course-header">
+                <div class="course-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                <h3 class="course-title">${course}</h3>
+            </div>
+            <p class="course-description">
+                Learn ${course} with our comprehensive curriculum and expert mentors.
+            </p>
+            <div class="course-actions">
+                <button class="course-btn learn-btn" onclick="startLearning('${course}')">
+                    <i class="fa-solid fa-play"></i> Start Learning
+                </button>
+                <button class="course-btn ai-btn" onclick="openAIChat('${course}')">
+                    <i class="fa-solid fa-robot"></i> Ask AI
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function openLearningModal(courseId) {
+    document.getElementById('courseLearningModal').style.display = 'flex';
+    loadCourseDetails(courseId);
+}
+
+function closeLearningModal() {
+    document.getElementById('courseLearningModal').style.display = 'none';
+}
+
+function openAIChat(courseId) {
+    document.getElementById('aiChatModal').style.display = 'flex';
+    currentCourseId = courseId;
+}
+
+function closeModal() {
+    document.getElementById('aiChatModal').style.display = 'none';
+}
+
+function changeTab(tabName) {
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+    document.querySelector(`[onclick="changeTab('${tabName}')"]`)?.classList.add('active');
+    document.getElementById(`${tabName}-tab`).style.display = 'block';
+}
+
+async function loadCourseDetails(courseId) {
+    try {
+        const res = await fetch(`/api/courses/${courseId}`, { method: 'GET', credentials: 'include' });
+        const data = await res.json();
+
+        if (data.success) {
+            const { title, description, sections = [], progress = 0 } = data.course;
+            document.getElementById('learningModalTitle').textContent = `Course: ${title}`;
+            document.getElementById('course-overview-text').textContent = description;
+            document.getElementById('course-sections-list').innerHTML = sections.map(s => `<li><i class="fa-solid fa-circle-check"></i> ${s.title}</li>`).join('');
+            const progressBar = document.getElementById('overall-progress');
+            progressBar.style.width = `${progress}%`;
+            progressBar.textContent = `${progress}%`;
+        }
+    } catch (err) {
+        console.error('Error loading course:', err);
+    }
+}
+
+function saveNotes() {
+    const notes = document.getElementById('course-notes').value.trim();
+    if (!notes) return;
+    const savedNotesList = document.getElementById('saved-notes-list');
+    const timestamp = new Date().toLocaleString();
+    savedNotesList.innerHTML += `
+        <div class="note-item">
+            <p>${notes}</p>
+            <small>${timestamp}</small>
+        </div>
+    `;
+    document.getElementById('course-notes').value = '';
+}
+
+function startLearning(course) {
+    document.getElementById('courseLearningModal').style.display = 'flex';
+    document.querySelector('.learning-content').innerHTML = `
+        <div class="loading-state">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <p>Loading learning resources...</p>
+        </div>`;
+    generateLearningResources(course);
+}
+
+async function generateLearningResources(course) {
+    try {
+        const res = await fetch('/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: `Generate a comprehensive learning plan for ${course}. Include overview, key topics, YouTube links, websites, and resources in JSON.`
+            }),
+            credentials: 'include'
+        });
+
+        const { response, success } = await res.json();
+        if (!success) throw new Error('AI failed');
+
+        let raw = response;
+        const pre = raw.match(/<pre><code[^>]*>([\s\S]*?)<\/code><\/pre>/i);
+        if (pre) raw = pre[1];
+
+        const txt = document.createElement('textarea');
+        txt.innerHTML = raw;
+        const courseData = JSON.parse(txt.value);
+
+        renderLearningContent(courseData);
+    } catch (err) {
+        console.error('Error generating resources:', err);
+        document.querySelector('.learning-content').innerHTML = `<p class="error">Failed to load learning resources. Please try again later.</p>`;
+    }
+}
+
+function renderLearningContent(courseData) {
+    const content = document.querySelector('.learning-content');
+    const overview = courseData.overview || 'No overview available.';
+
+    const topics = (courseData.key_topics || []).map(topic => {
+        if (typeof topic === 'object') {
+            const subs = Array.isArray(topic.subtopics) ? topic.subtopics.map(s => `<li>${s}</li>`).join('') : '';
+            return `<div class="topic-card"><h4>${topic.topic}</h4><ul>${subs}</ul></div>`;
+        }
+        return `<div class="topic-card"><h4>${topic}</h4></div>`;
+    }).join('') || '<p>No topics yet.</p>';
+
+    const videos = (courseData.recommended_youtube_videos || []).map(video => {
+        const title = video.title || video.topic || 'Video';
+        const link = video.link || video.url || '#';
+        const videoId = link.includes('v=') ? link.split('v=')[1].split('&')[0] : (link.includes('youtu.be/') ? link.split('youtu.be/')[1].split('?')[0] : '');
+        return `
+            <div class="video-card" onclick="window.open('${link}', '_blank')">
+                <div class="video-thumbnail">
+                    <img src="https://img.youtube.com/vi/${videoId}/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/${videoId}/hqdefault.jpg'" alt="${title}">
+                    <div class="play-button"><i class="fa-solid fa-play"></i></div>
+                </div>
+                <h4>${title}</h4>
+            </div>`;
+    }).join('') || '<p>No videos found.</p>';
+
+    const websites = (courseData.useful_websites || []).map(site => `<li><a href="${site.link || site.url}" target="_blank">${site.name || site.title}</a></li>`).join('') || '<li>No websites found.</li>';
+
+    const resources = (courseData.additional_resources || []).map(r => `<li><a href="${r.link || r.url}" target="_blank">${r.name || r.title}</a></li>`).join('') || '<li>No additional resources.</li>';
+
+    content.innerHTML = `
+        <div class="course-overview">
+            <h3>Overview</h3>
+            <p>${overview}</p>
+        </div>
+        <div class="key-topics">
+            <h3>Key Topics</h3>
+            ${topics}
+        </div>
+        <div class="video-tutorials">
+            <h3>Recommended Videos</h3>
+            <div class="video-grid">${videos}</div>
+        </div>
+        <div class="learning-websites">
+            <h3>Useful Websites</h3>
+            <ul>${websites}</ul>
+        </div>
+        <div class="additional-resources">
+            <h3>Additional Resources</h3>
+            <ul>${resources}</ul>
+        </div>`;
+}
+
+// Tab switching
+function showTab(tab) {
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.querySelector(`.tab-btn[onclick="showTab('${tab}')"]`).classList.add('active');
+}
+// Show AI Helper by default
+showTab('ai-helper');
+
+// --- AI Study Helper ---
+document.getElementById('ai-helper-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const input = document.getElementById('ai-helper-input');
+    const answer = document.getElementById('ai-helper-answer');
+    const q = input.value.trim();
+    if (!q) return;
+    answer.innerHTML = '<span style="color:#3a86ff"><i class="fa-solid fa-spinner fa-spin"></i> Thinking...</span>';
+    try {
+        const res = await fetch('/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: q }),
+            credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success && data.response) {
+            answer.innerHTML = `<b>AI:</b> ${data.response}`;
+            addActivity(`Asked AI: "${q}"`);
+        } else {
+            answer.innerHTML = '<span style="color:#e53e3e">Sorry, I could not answer that. Try again!</span>';
+        }
+    } catch (err) {
+        answer.innerHTML = '<span style="color:#e53e3e">Error connecting to AI. Try again later.</span>';
+    }
+});
+
+// --- AI Study Plan Generator ---
+document.getElementById('study-plan-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const input = document.getElementById('study-plan-input');
+    const result = document.getElementById('study-plan-result');
+    const q = input.value.trim();
+    if (!q) return;
+    result.innerHTML = '<span style="color:#3a86ff"><i class="fa-solid fa-spinner fa-spin"></i> Generating plan...</span>';
+    try {
+        const res = await fetch('/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: `Create a weekly study plan for: ${q}. Format as a readable schedule.` }),
+            credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success && data.response) {
+            result.innerHTML = data.response;
+            addActivity(`Generated study plan for: ${q}`);
+        } else {
+            result.innerHTML = '<span style="color:#e53e3e">Could not generate plan. Try again!</span>';
+        }
+    } catch (err) {
+        result.innerHTML = '<span style="color:#e53e3e">Error connecting to AI. Try again later.</span>';
+    }
+});
+
+// --- Activity Feed (local demo) ---
+function getActivityFeed() {
+    return JSON.parse(localStorage.getItem('mentorai_activity_feed') || '[]');
+}
+function addActivity(msg) {
+    const feed = getActivityFeed();
+    feed.unshift({ msg, time: new Date().toLocaleString() });
+    localStorage.setItem('mentorai_activity_feed', JSON.stringify(feed.slice(0, 20)));
+    renderActivityFeed();
+}
+function renderActivityFeed() {
+    const feed = getActivityFeed();
+    const list = document.getElementById('activity-feed-list');
+    if (!feed.length) {
+        list.innerHTML = '<li style="color:#b0b0b0;text-align:center;">No recent activity yet.</li>';
+    } else {
+        list.innerHTML = feed.map(f => `<li style="margin-bottom:10px;"><span style="color:#3a86ff">${f.time}:</span> ${f.msg}</li>`).join('');
+    }
+}
+renderActivityFeed();
+
+// --- Quick Notes & AI Summarizer ---
+document.getElementById('summarize-notes-btn').addEventListener('click', async function() {
+    const notes = document.getElementById('notes-input').value.trim();
+    const result = document.getElementById('notes-ai-result');
+    if (!notes) return;
+    result.innerHTML = '<span style="color:#3a86ff"><i class="fa-solid fa-spinner fa-spin"></i> Summarizing...</span>';
+    try {
+        const res = await fetch('/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: `Summarize these notes: ${notes}` }),
+            credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success && data.response) {
+            result.innerHTML = `<b>Summary:</b> ${data.response}`;
+            addActivity('Used AI to summarize notes');
+        } else {
+            result.innerHTML = '<span style="color:#e53e3e">Could not summarize. Try again!</span>';
+        }
+    } catch (err) {
+        result.innerHTML = '<span style="color:#e53e3e">Error connecting to AI. Try again later.</span>';
+    }
+});
+document.getElementById('rephrase-notes-btn').addEventListener('click', async function() {
+    const notes = document.getElementById('notes-input').value.trim();
+    const result = document.getElementById('notes-ai-result');
+    if (!notes) return;
+    result.innerHTML = '<span style="color:#3a86ff"><i class="fa-solid fa-spinner fa-spin"></i> Rephrasing...</span>';
+    try {
+        const res = await fetch('/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: `Rephrase these notes: ${notes}` }),
+            credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success && data.response) {
+            result.innerHTML = `<b>Rephrased:</b> ${data.response}`;
+            addActivity('Used AI to rephrase notes');
+        } else {
+            result.innerHTML = '<span style="color:#e53e3e">Could not rephrase. Try again!</span>';
+        }
+    } catch (err) {
+        result.innerHTML = '<span style="color:#e53e3e">Error connecting to AI. Try again later.</span>';
+    }
+});
+
+// --- Deadlines/Reminders (local) ---
+function getDeadlines() {
+    return JSON.parse(localStorage.getItem('mentorai_deadlines') || '[]');
+}
+function saveDeadlines(dl) {
+    localStorage.setItem('mentorai_deadlines', JSON.stringify(dl));
+}
+function renderDeadlines() {
+    const dl = getDeadlines();
+    const list = document.getElementById('deadlines-list');
+    if (!dl.length) {
+        list.innerHTML = '<li style="color:#b0b0b0;text-align:center;">No deadlines yet.</li>';
+    } else {
+        list.innerHTML = dl.map((d, i) => `<li style="margin-bottom:10px;">📅 <b>${d.text}</b> <span style="color:#3a86ff">(${d.date})</span> <button onclick="removeDeadline(${i})" style="background:none;border:none;color:#f4007a;font-size:1.1em;cursor:pointer;">&times;</button></li>`).join('');
+    }
+}
+window.removeDeadline = function(idx) {
+    const dl = getDeadlines();
+    dl.splice(idx, 1);
+    saveDeadlines(dl);
+    renderDeadlines();
+};
+document.getElementById('deadline-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const text = document.getElementById('deadline-input').value.trim();
+    const date = document.getElementById('deadline-date').value;
+    if (!text || !date) return;
+    const dl = getDeadlines();
+    dl.push({ text, date });
+    saveDeadlines(dl);
+    renderDeadlines();
+    addActivity(`Added deadline: ${text} (${date})`);
+    this.reset();
+});
+renderDeadlines();
+
+// --- Streaks (local) ---
+function getStreak() {
+    return parseInt(localStorage.getItem('mentorai_streak') || '0', 10);
+}
+function setStreak(val) {
+    localStorage.setItem('mentorai_streak', val);
+}
+function renderStreak() {
+    document.getElementById('streak-days').textContent = getStreak() + ' days';
+}
+document.getElementById('streak-btn').addEventListener('click', function() {
+    let streak = getStreak();
+    streak++;
+    setStreak(streak);
+    renderStreak();
+    addActivity('Marked today as studied');
+});
+renderStreak();
+
+// --- AI Flashcard Generator ---
+document.getElementById('flashcard-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const input = document.getElementById('flashcard-input');
+    const result = document.getElementById('flashcard-result');
+    const q = input.value.trim();
+    if (!q) return;
+    result.innerHTML = '<span style="color:#3a86ff"><i class="fa-solid fa-spinner fa-spin"></i> Generating flashcards...</span>';
+    try {
+        const res = await fetch('/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: `Generate 20 flashcards for: ${q}. Format as Q&A pairs.` }),
+            credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success && data.response) {
+            result.innerHTML = data.response;
+            addActivity(`Generated flashcards for: ${q}`);
+        } else {
+            result.innerHTML = '<span style="color:#e53e3e">Could not generate flashcards. Try again!</span>';
+        }
+    } catch (err) {
+        result.innerHTML = '<span style="color:#e53e3e">Error connecting to AI. Try again later.</span>';
+    }
+});
+
+// --- AI Resource Recommendations ---
+document.getElementById('resource-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const input = document.getElementById('resource-input');
+    const result = document.getElementById('resource-result');
+    const q = input.value.trim();
+    if (!q) return;
+    result.innerHTML = '<span style="color:#3a86ff"><i class="fa-solid fa-spinner fa-spin"></i> Finding resources...</span>';
+    try {
+        const res = await fetch('/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: `Suggest the best online resources (videos, articles, books) for: ${q}.` }),
+            credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success && data.response) {
+            result.innerHTML = data.response;
+            addActivity(`Got AI resources for: ${q}`);
+        } else {
+            result.innerHTML = '<span style="color:#e53e3e">Could not find resources. Try again!</span>';
+        }
+    } catch (err) {
+        result.innerHTML = '<span style="color:#e53e3e">Error connecting to AI. Try again later.</span>';
+    }
+});
+
+// --- Mood & Focus Tracker (local + AI tip) ---
+function getMoodLog() {
+    return JSON.parse(localStorage.getItem('mentorai_mood_log') || '[]');
+}
+function saveMoodLog(log) {
+    localStorage.setItem('mentorai_mood_log', JSON.stringify(log));
+}
+function renderMoodLog() {
+    const log = getMoodLog();
+    const div = document.getElementById('mood-log');
+    if (!log.length) {
+        div.innerHTML = '<span style="color:#b0b0b0;">No mood logs yet.</span>';
+    } else {
+        div.innerHTML = log.slice(-5).reverse().map(m => `<div>${m.time}: <b>${m.mood}</b></div>`).join('');
+    }
+}
+document.getElementById('mood-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const mood = document.getElementById('mood-select').value;
+    if (!mood) return;
+    const log = getMoodLog();
+    const entry = { mood, time: new Date().toLocaleString() };
+    log.push(entry);
+    saveMoodLog(log);
+    renderMoodLog();
+    addActivity(`Logged mood: ${mood}`);
+    // Get AI tip
+    const tipDiv = document.getElementById('mood-tip');
+    tipDiv.innerHTML = '<span style="color:#3a86ff"><i class="fa-solid fa-spinner fa-spin"></i> Getting tip...</span>';
+    try {
+        const res = await fetch('/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: `Give a short study tip for a student feeling: ${mood}` }),
+            credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success && data.response) {
+            tipDiv.innerHTML = `<b>AI Tip:</b> ${data.response}`;
+        } else {
+            tipDiv.innerHTML = '<span style="color:#e53e3e">No tip available. Try again!</span>';
+        }
+    } catch (err) {
+        tipDiv.innerHTML = '<span style="color:#e53e3e">Error connecting to AI. Try again later.</span>';
+    }
+});
+renderMoodLog();
+
+// --- AI Practice Questions ---
+document.getElementById('practice-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const input = document.getElementById('practice-input');
+    const result = document.getElementById('practice-result');
+    const q = input.value.trim();
+    if (!q) return;
+    result.innerHTML = '<span style="color:#3a86ff"><i class="fa-solid fa-spinner fa-spin"></i> Generating questions...</span>';
+    try {
+        const res = await fetch('/ai/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: `Generate 3 practice questions (with answers) for: ${q}` }),
+            credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success && data.response) {
+            result.innerHTML = data.response;
+            addActivity(`Got practice questions for: ${q}`);
+        } else {
+            result.innerHTML = '<span style="color:#e53e3e">Could not generate questions. Try again!</span>';
+        }
+    } catch (err) {
+        result.innerHTML = '<span style="color:#e53e3e">Error connecting to AI. Try again later.</span>';
+    }
+});
+
+// --- Peer Q&A Board (local demo) ---
+function getQnA() {
+    return JSON.parse(localStorage.getItem('mentorai_qna') || '[]');
+}
+function saveQnA(qna) {
+    localStorage.setItem('mentorai_qna', JSON.stringify(qna));
+}
+function renderQnA() {
+    const qna = getQnA();
+    const list = document.getElementById('qna-list');
+    if (!qna.length) {
+        list.innerHTML = '<li style="color:#b0b0b0;text-align:center;">No questions yet. Be the first to ask!</li>';
+    } else {
+        list.innerHTML = qna.map((q, i) => `<li style="margin-bottom:10px;"><b>Q:</b> ${q.q}<br><b>A:</b> ${q.a || '<span style=\"color:#b0b0b0;\">No answer yet.</span>'} <button onclick="answerQnA(${i})" style="background:none;border:none;color:#3a86ff;font-size:0.95em;cursor:pointer;">Answer</button></li>`).join('');
+    }
+}
+document.getElementById('qna-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const input = document.getElementById('qna-input');
+    const val = input.value.trim();
+    if (!val) return;
+    const qna = getQnA();
+    qna.unshift({ q: val, a: '' });
+    saveQnA(qna);
+    renderQnA();
+    addActivity(`Posted peer Q: ${val}`);
+    input.value = '';
+});
+window.answerQnA = function(idx) {
+    const ans = prompt('Type your answer:');
+    if (!ans) return;
+    const qna = getQnA();
+    qna[idx].a = ans;
+    saveQnA(qna);
+    renderQnA();
+    addActivity('Answered a peer Q');
+};
+renderQnA();
+
+    </script>
+</body>
+</html>

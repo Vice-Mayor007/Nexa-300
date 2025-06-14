@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MentorAI | Sign Up</title>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            rel="stylesheet">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="signup.css">
+        <link rel="shortcut icon" href="mentor-ai-icon.png" type="image/x-icon">
+    </head>
+    <body>
+
+        <main>
+            <div class="signup-container">
+                <h2>Join MentorAI</h2>
+                <h5>Create your account and start your journey to success</h5>
+
+                <form id="signup-form">
+                    <div class="form-group">
+                        <input type="text" id="username" name="username"
+                            required placeholder="Username">
+                        <span id="usernameError" class="error-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" required
+                            placeholder="Email">
+                        <span id="emailError" class="error-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="contact" name="contact"
+                            required
+                            placeholder="Contact Number">
+                        <span id="contactError" class="error-message"></span>
+
+                        <div class="form-group">
+                            <div class="input-icon-wrapper">
+                                <input type="password" id="password"
+                                    name="password"
+                                    required placeholder="Password">
+                                <i class="fa-solid fa-eye-slash toggle-password"
+                                    id="togglePassword"></i>
+                            </div>
+                            <span id="passwordError"
+                                class="error-message"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-icon-wrapper">
+                                <input type="password" id="confirmPassword"
+                                    name="confirmPassword" required
+                                    placeholder="Confirm Password">
+                                <i class="fa-solid fa-eye-slash toggle-password"
+                                    id="toggleConfirmPassword"></i>
+                            </div>
+                            <span id="confirmPasswordError"
+                                class="error-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <select id="role" name="role" required>
+                                <option value>Select Role</option>
+                                <option value="mentor">Mentor</option>
+                                <option value="student">Student</option>
+                            </select>
+                            <span id="roleError" class="error-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="courseSearch">Select Your
+                                Interests/Expertise:</label>
+                            <div class="multi-select-container">
+                                <div class="search-container">
+                                    <input type="text" id="courseSearch"
+                                        placeholder="Search courses...">
+                                    <div id="courseDropdown"
+                                        class="dropdown-content"></div>
+                                </div>
+                                <div id="selectedCourses"
+                                    class="selected-items"></div>
+                                <input type="hidden" id="coursesHidden"
+                                    name="courses" value>
+                            </div>
+                            <span id="coursesError"
+                                class="error-message"></span>
+                        </div>
+                        <div class="form-group terms-checkbox">
+                            <input type="checkbox" id="terms" name="terms"
+                                required>
+                            <label for="terms">I agree to the <a
+                                    href="terms.html">Terms of Service</a> and
+                                <a
+                                    href="privacy.html">Privacy
+                                    Policy</a></label>
+                            <span id="termsError" class="error-message"></span>
+                        </div>
+
+                        <button class="signup-btn" type="submit"
+                            id="login-button">
+                            <span id="button-text">Sign Up</span>
+                            <span id="button-loading" style="display: none;">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                Loading...
+                            </span>
+                        </button>
+                    </form>
+
+                    <div class="login-link">
+                        <p>Already have an account? <a href="login.html">Log
+                                In</a></p>
+                    </div>
+                </div>
+            </main>
+
+            <script>
+const availableCourses = [
+    "Mathematics", 
+    "Physics", 
+    "Computer Science", 
+    "Chemistry", 
+    "Literature",
+    "Data Science",
+    "Law",
+    "Psychology",
+    "Economics",
+    "History",
+    "Philosophy",
+    "Statistics",
+
+    "Political Science",
+    "Agric Science",
+    "Microbiology",
+    "Biochemistry",
+    "Animal Science and Biotechnology",
+    "Environmental management and toxicology",
+    "English Language",
+    "Geophysics",
+    "Geology",
+    "Mass Communication",
+    "Public Administration",
+    "Business Administration",
+    "Marketing",
+    "Finance",
+    "Accounting",
+    "Nursing",
+    "Medicine",
+    "Pharmacy",
+    "Engineering",
+];
+
+const courseSearch = document.getElementById('courseSearch');
+const courseDropdown = document.getElementById('courseDropdown');
+const selectedCourses = document.getElementById('selectedCourses');
+const coursesHidden = document.getElementById('coursesHidden');
+const selectedItems = new Set();
+
+// Initialize
+function initMultiSelect() {
+    // Clear any previous content
+    courseDropdown.innerHTML = '';
+    
+    // Update the hidden input with current selections
+    updateHiddenInput();
+    
+    // Add event listener for the search input
+    courseSearch.addEventListener('input', filterCourses);
+    courseSearch.addEventListener('focus', showDropdown);
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.multi-select-container')) {
+            courseDropdown.style.display = 'none';
+        }
+    });
+}
+
+// Filter courses based on search input
+function filterCourses() {
+    const searchText = courseSearch.value.toLowerCase();
+    courseDropdown.innerHTML = '';
+    
+    const filteredCourses = availableCourses.filter(course => 
+        !selectedItems.has(course) && course.toLowerCase().includes(searchText)
+    );
+    
+    if (filteredCourses.length > 0) {
+        filteredCourses.forEach(course => {
+            const option = document.createElement('div');
+            option.innerText = course;
+            option.addEventListener('click', () => {
+                addCourse(course);
+                courseSearch.value = '';
+                courseDropdown.style.display = 'none';
+                courseSearch.focus();
+            });
+            courseDropdown.appendChild(option);
+        });
+        courseDropdown.style.display = 'block';
+    } else {
+        courseDropdown.style.display = 'none';
+    }
+}
+
+// Show dropdown with all available options
+function showDropdown() {
+    filterCourses();
+}
+
+// Add a selected course
+function addCourse(course) {
+    if (!selectedItems.has(course)) {
+        selectedItems.add(course);
+        renderSelectedCourses();
+        updateHiddenInput();
+    }
+}
+
+// Remove a selected course
+function removeCourse(course) {
+    selectedItems.delete(course);
+    renderSelectedCourses();
+    updateHiddenInput();
+}
+
+// Render all selected courses as tags
+function renderSelectedCourses() {
+    selectedCourses.innerHTML = '';
+    selectedItems.forEach(course => {
+        const tag = document.createElement('div');
+        tag.className = 'selected-tag';
+        tag.innerHTML = `${course} <span class="remove-tag" data-course="${course}">×</span>`;
+        selectedCourses.appendChild(tag);
+    });
+    
+    // Add click handlers to remove buttons
+    document.querySelectorAll('.remove-tag').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            removeCourse(e.target.getAttribute('data-course'));
+        });
+    });
+}
+
+// Update the hidden input with selected values for form submission
+function updateHiddenInput() {
+    coursesHidden.value = Array.from(selectedItems).join(',');
+}
+
+// Initialize the multi-select component
+document.addEventListener('DOMContentLoaded', initMultiSelect);
+
+
+
+            // Function to toggle loading state
+function setButtonLoading(isLoading) {
+  const buttonText = document.getElementById('button-text');
+  const buttonLoading = document.getElementById('button-loading');
+  const button = document.getElementById('login-button');
+  
+  if (isLoading) {
+    buttonText.style.display = 'none';
+    buttonLoading.style.display = 'inline';
+    button.disabled = true;
+  } else {
+    buttonText.style.display = 'inline';
+    buttonLoading.style.display = 'none';
+    button.disabled = false;
+  }
+}
+   // Password toggle logic
+const togglePassword = document.getElementById('togglePassword');
+const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+const password = document.getElementById('password');
+const confirmPassword = document.getElementById('confirmPassword');
+
+togglePassword.addEventListener('click', () => {
+    const type = password.type === 'password' ? 'text' : 'password';
+    password.type = type;
+    togglePassword.classList.toggle('fa-eye');
+    togglePassword.classList.toggle('fa-eye-slash');
+});
+
+toggleConfirmPassword.addEventListener('click', () => {
+    const type = confirmPassword.type === 'password' ? 'text' : 'password';
+    confirmPassword.type = type;
+    toggleConfirmPassword.classList.toggle('fa-eye');
+    toggleConfirmPassword.classList.toggle('fa-eye-slash');
+});
+
+// Form validation and submission
+document.getElementById('signup-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+
+         // Show loading state
+  setButtonLoading(true);
+   const selectedCoursesArray = Array.from(selectedItems);
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const passwordVal = document.getElementById('password').value;
+    const confirmPasswordVal = document.getElementById('confirmPassword').value;
+    const contact = document.getElementById('contact').value.trim();
+    const role = document.getElementById('role').value; 
+    const terms = document.getElementById('terms').checked;
+
+    const usernameError = document.getElementById('usernameError');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const confirmPasswordError = document.getElementById('confirmPasswordError');
+    const roleError = document.getElementById('roleError');
+    const contactError = document.getElementById('contactError');
+    const termsError = document.getElementById('termsError');
+
+    // Clear all errors
+    usernameError.textContent = '';
+    emailError.textContent = '';
+    passwordError.textContent = '';
+    confirmPasswordError.textContent = '';
+    roleError.textContent = ''; // Clear role error
+    termsError.textContent = '';
+
+    let isValid = true;
+
+    if (username.length < 3) {
+        usernameError.textContent = 'Username must be at least 3 characters.';
+        isValid = false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        emailError.textContent = 'Enter a valid email address.';
+        isValid = false;
+    }
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(passwordVal)) {
+        passwordError.textContent = 'Password must be 8+ characters, include a number, letter, and special character.';
+        isValid = false;
+    }
+
+    if (passwordVal !== confirmPasswordVal) {
+        confirmPasswordError.textContent = 'Passwords do not match.';
+        isValid = false;
+    }
+
+    if (!role) {
+        roleError.textContent = 'Please select a role.';
+        isValid = false;
+    }
+    if (!contact) {
+        contactError.textContent = 'Please enter your contact number.';
+        isValid = false;
+    } else if (contact.length < 10) {
+        contactError.textContent = 'Contact number must be at least 10 digits.';
+        isValid = false;
+    }else if (!contact.match(/^[0-9]+$/)) {
+        contactError.textContent = 'Contact number must be numeric.';
+        isValid = false;
+    }
+
+    if (!terms) {
+        termsError.textContent = 'You must agree to the terms.';
+        isValid = false;
+    }
+
+    if (!isValid) return;
+
+    try {
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password: passwordVal, role, courses: selectedCoursesArray,contact  })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            window.location.href = "login.html";
+        } else {
+            if (data.message) {
+                if (data.message.toLowerCase().includes('username')) {
+                    usernameError.textContent = data.message;
+                } else if (data.message.toLowerCase().includes('email')) {
+                    emailError.textContent = data.message;
+                } else if (data.message.toLowerCase().includes('password')) {
+                    passwordError.textContent = data.message;
+                } else {
+                    termsError.textContent = data.message;
+                }
+            } else {
+                termsError.textContent = 'Something went wrong. Try again later.';
+            }
+        }
+    } catch (error) {
+        termsError.textContent = 'Network error or server not reachable.';
+        // Clear the error message after a few seconds
+    setTimeout(() => {
+      errorDiv.textContent = "";
+    }, 5000); // Clear after 5 seconds
+    } finally {
+        // Hide loading state
+        setButtonLoading(false);
+    }
+});
+    
+</script>
+
+        </body>
+    </html>

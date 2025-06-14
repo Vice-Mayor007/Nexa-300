@@ -1,0 +1,512 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 90vh;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: #fff;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-box {
+            padding: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .chat-item {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .chat-item:hover {
+            background: #f0f2f5;
+        }
+
+        .chat-item.active {
+            background: #e9ecef;
+        }
+
+        .chat-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .chat-info {
+            flex: 1;
+        }
+
+        .chat-info h4 {
+            margin: 0;
+            font-size: 14px;
+            color: #1a1a1a;
+        }
+
+        .chat-info p {
+            margin: 0;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+
+        .status-online {
+            background: #28a745;
+        }
+
+        .status-offline {
+            background: #dc3545;
+        }
+
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            background: #fff;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message.sent {
+            align-items: flex-end;
+        }
+
+        .message.received {
+            align-items: flex-start;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .message.sent .message-content {
+            background: #0084ff;
+            color: white;
+        }
+
+        .message.received .message-content {
+            background: #e9ecef;
+            color: #1a1a1a;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .message-status {
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .chat-input {
+            padding: 20px;
+            background: #fff;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            outline: none;
+            margin-right: 10px;
+        }
+
+        .chat-input button {
+            padding: 10px 20px;
+            background: #0084ff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .chat-input button:hover {
+            background: #0073e6;
+        }
+
+        .typing-indicator {
+            padding: 10px;
+            color: #666;
+            font-style: italic;
+            display: none;
+        }
+
+        .profile-link {
+            color: #0084ff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .profile-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .sidebar {
+                position: absolute;
+                left: -300px;
+                height: 100%;
+                transition: left 0.3s;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Messages</h2>
+                <a href="/dashboard" class="profile-link">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
+            </div>
+            <div class="search-box">
+                <input type="text" placeholder="Search conversations...">
+            </div>
+            <div class="chat-list" id="chatList">
+                <!-- Chat items will be added here dynamically -->
+            </div>
+        </div>
+        <div class="main-chat">
+            <div class="chat-header">
+                <img src="https://via.placeholder.com/40" alt="User">
+                <div class="chat-info">
+                    <h4 id="currentChatName">Select a chat</h4>
+                    <p id="currentChatStatus">offline</p>
+                </div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be added here dynamically -->
+            </div>
+            <div class="typing-indicator" id="typingIndicator">
+                Someone is typing...
+            </div>
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="Type a message...">
+                <button id="sendButton">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Initialize Socket.IO
+        const socket = io();
+
+        // DOM Elements
+        const chatList = document.getElementById('chatList');
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const currentChatName = document.getElementById('currentChatName');
+        const currentChatStatus = document.getElementById('currentChatStatus');
+
+        // State
+        let currentUser = null;
+        let currentChat = null;
+        let typingTimeout = null;
+
+        // Connect to Socket.IO
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            // Get current user from session
+            fetch('/user/profile')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        currentUser = data.name;
+                        socket.emit('user_connected', currentUser);
+                    }
+                })
+                .catch(error => console.error('Error fetching user profile:', error));
+        });
+
+        // Handle incoming messages
+        socket.on('new_message', (message) => {
+            addMessage(message);
+        });
+
+        // Handle message sent confirmation
+        socket.on('message_sent', (message) => {
+            console.log('Message sent:', message);
+        });
+
+        // Handle typing indicator
+        socket.on('user_typing', (data) => {
+            if (data.userId === currentChat) {
+                typingIndicator.style.display = 'block';
+                setTimeout(() => {
+                    typingIndicator.style.display = 'none';
+                }, 3000);
+            }
+        });
+
+        // Handle user status changes
+        socket.on('user_status_change', (data) => {
+            updateUserStatus(data.userId, data.status);
+        });
+
+        // Handle message status updates
+        socket.on('message_status_update', (data) => {
+            updateMessageStatus(data.messageId, data.status);
+        });
+
+        // Send message
+        function sendMessage() {
+            const content = messageInput.value.trim();
+            if (!content || !currentChat) return;
+
+            const message = {
+                sender: currentUser,
+                receiver: currentChat,
+                content: content
+            };
+
+            socket.emit('send_message', message);
+            messageInput.value = '';
+        }
+
+        // Add message to chat
+        function addMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${message.sender === currentUser ? 'sent' : 'received'}`;
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.textContent = message.content;
+            
+            const time = document.createElement('div');
+            time.className = 'message-time';
+            time.textContent = new Date(message.timestamp).toLocaleTimeString();
+            
+            const status = document.createElement('div');
+            status.className = 'message-status';
+            status.textContent = message.status;
+            
+            messageDiv.appendChild(content);
+            messageDiv.appendChild(time);
+            messageDiv.appendChild(status);
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Update user status
+        function updateUserStatus(userId, status) {
+            const statusElement = document.querySelector(`[data-user-id="${userId}"] .status-indicator`);
+            if (statusElement) {
+                statusElement.className = `status-indicator status-${status}`;
+            }
+            if (userId === currentChat) {
+                currentChatStatus.textContent = status;
+            }
+        }
+
+        // Update message status
+        function updateMessageStatus(messageId, status) {
+            const messageElement = document.querySelector(`[data-message-id="${messageId}"] .message-status`);
+            if (messageElement) {
+                messageElement.textContent = status;
+            }
+        }
+
+        // Handle typing
+        function handleTyping() {
+            if (!currentChat) return;
+            
+            socket.emit('typing', {
+                sender: currentUser,
+                receiver: currentChat,
+                isTyping: true
+            });
+
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                socket.emit('typing', {
+                    sender: currentUser,
+                    receiver: currentChat,
+                    isTyping: false
+                });
+            }, 1000);
+        }
+
+        // Event Listeners
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        messageInput.addEventListener('input', handleTyping);
+
+        // Load chat list
+        function loadChatList() {
+            fetch('/api/user/profile')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const users = data.user.role === 'student' ? 
+                            fetch('/findmentors').then(r => r.json()) :
+                            fetch('/findstudents').then(r => r.json());
+                        
+                        return users;
+                    }
+                })
+                .then(data => {
+                    if (data && data.success) {
+                        const users = data.mentors || data.students;
+                        users.forEach(user => {
+                            const chatItem = createChatItem(user);
+                            chatList.appendChild(chatItem);
+                        });
+                    }
+                })
+                .catch(error => console.error('Error loading chat list:', error));
+        }
+
+        // Create chat item
+        function createChatItem(user) {
+            const div = document.createElement('div');
+            div.className = 'chat-item';
+            div.setAttribute('data-user-id', user.username);
+            
+            div.innerHTML = `
+                <img src="https://via.placeholder.com/40" alt="${user.username}">
+                <div class="chat-info">
+                    <h4>${user.username}</h4>
+                    <p>${user.role}</p>
+                </div>
+                <div class="status-indicator status-offline"></div>
+            `;
+            
+            div.addEventListener('click', () => {
+                currentChat = user.username;
+                currentChatName.textContent = user.username;
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                div.classList.add('active');
+                // Load chat history here
+            });
+            
+            return div;
+        }
+
+        // Initial load
+        loadChatList();
+    </script>
+</body>
+</html> 

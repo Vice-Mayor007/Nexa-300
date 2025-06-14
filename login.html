@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MentorAI | Login</title>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            rel="stylesheet">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="login.css">
+        <link rel="shortcut icon" href="mentor-ai-icon.png" type="image/x-icon">
+    </head>
+    <body>
+
+        <main>
+
+            <div class="signup-container">
+                <div id="error-message"
+                    style="color: red; margin-bottom: 1rem; text-align: center;"></div>
+                <h2 id="greeting">Login to your account</h2>
+                <h5>Login to your account to continue your journey</h5>
+
+                <form id="login-form" method="post" action="/login">
+                    <div class="form-group">
+                        <div class="input-icon-wrapper">
+                            <input type="text" id="username" name="username"
+                                required aria-label="username"
+                                placeholder="Username">
+                        </div>
+                        <span id="usernameError" class="error-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-icon-wrapper">
+                            <input type="password" id="password" name="password"
+                                required aria-label="Password"
+                                placeholder="Password">
+                            <i class="fa-solid fa-eye-slash toggle-password"
+                                id="togglePassword"></i>
+                        </div>
+                        <span id="passwordError" class="error-message"></span>
+                    </div>
+
+                    <button class="signup-btn" type="submit" id="login-button">
+                        <span id="button-text">Log In</span>
+                        <span id="button-loading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i> Loading...
+                        </span>
+                    </button>
+                </form>
+
+               
+
+
+                <div class="login-link">
+                    <p>New user? <a href="signup.html">Sign Up</a></p>
+                </div>
+            </div>
+        </main>
+        <script>
+            // Function to toggle loading state
+function setButtonLoading(isLoading) {
+  const buttonText = document.getElementById('button-text');
+  const buttonLoading = document.getElementById('button-loading');
+  const button = document.getElementById('login-button');
+  
+  if (isLoading) {
+    buttonText.style.display = 'none';
+    buttonLoading.style.display = 'inline';
+    button.disabled = true;
+  } else {
+    buttonText.style.display = 'inline';
+    buttonLoading.style.display = 'none';
+    button.disabled = false;
+  }
+}
+
+// Password toggle functionality
+document.getElementById('togglePassword').addEventListener('click', function() {
+  const passwordInput = document.getElementById('password');
+  const icon = this;
+  
+  // Toggle the password input type
+  const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+  passwordInput.setAttribute('type', type);
+  
+  // Toggle the eye icon
+  icon.classList.toggle('fa-eye-slash');
+  icon.classList.toggle('fa-eye');
+});
+
+document.getElementById("login-form").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  // Show loading state
+  setButtonLoading(true);
+  
+  const formData = new FormData(this);
+  const username = formData.get("username");
+  const password = formData.get("password");
+  const errorDiv = document.getElementById("error-message");
+
+  try {
+    const res = await fetch("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      // Successful login, redirect based on role
+      if (data.role === 'mentor') {
+        window.location.href = "/mentordashboard.html";
+      } else {
+        window.location.href = "/studentdashboard.html";
+      }
+    } else {
+      // Failed login
+      errorDiv.textContent = data.message || "Login failed.";
+      
+      // Clear the error message after a few seconds
+      setTimeout(() => {
+        errorDiv.textContent = "";
+      }, 5000); // Clear after 5 seconds
+    }
+  } catch (error) {
+    errorDiv.textContent = "Network error. Please try again.";
+    
+    // Clear the error message after a few seconds
+    setTimeout(() => {
+      errorDiv.textContent = "";
+    }, 5000);
+  } finally {
+    // Hide loading state
+    setButtonLoading(false);
+  }
+});
+</script>
+
+    </body>
+</html>

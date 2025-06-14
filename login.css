@@ -1,0 +1,481 @@
+@import url("https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+:root {
+  --primary-color: #000;
+  --secondary-color: #f4007c;
+  --tertiary-color: #a901f2;
+  --quaternary-color: #4e46e4;
+  --error-color: #dc3545;
+  --golden-color: #fea13a;
+  --body-bg-color: #e5f6ff;
+  --text-color: #333;
+  --light-gray: #f5f5f5;
+  --medium-gray: #f8f8f8;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Kanit", serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--body-bg-color);
+  background-size: 1em 1em;
+  backdrop-filter: blur(4px);
+  color: var(--text-color);
+}
+
+header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  width: 18rem;
+}
+
+.signup-container {
+  padding: 1.5rem;
+
+  width: 27rem;
+
+  max-width: 40rem;
+  margin: 0.5rem;
+  margin-top: 8rem;
+}
+
+.signup-container h2 {
+  color: var(--primary-color);
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+  text-align: center;
+  font-weight: 300;
+}
+
+h5 {
+  color: #666;
+  font-weight: normal;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 0.875rem;
+  position: relative;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.625rem 0.625rem 0.625rem 2.5rem;
+  margin-top: 0.25rem;
+  border-radius: 0.6rem;
+  font-size: 0.875rem;
+  font-family: "Kanit", serif;
+  background: #ffffff;
+  box-shadow: inset 5px 5px 5px #f8f8f8, inset -5px -5px 10px #ffffff;
+  border: none;
+  color: var(--secondary-color);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 2px rgba(78, 70, 228, 0.1);
+}
+
+.input-icon-wrapper {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--tertiary-color);
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--quaternary-color);
+}
+
+.phone-input {
+  width: 100%;
+}
+
+.signup-btn {
+  background: linear-gradient(
+    90deg,
+    var(--secondary-color),
+    var(--tertiary-color)
+  );
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.625rem;
+  width: 100%;
+  text-align: center;
+  transition: background 0.3s ease;
+  box-shadow: 1px 1px 1px var(--secondary-color),
+    -1px -1px 1px var(--secondary-color);
+  font-family: "Kanit", serif;
+}
+
+.signup-btn:hover {
+  background: linear-gradient(
+    90deg,
+    var(--tertiary-color),
+    var(--secondary-color)
+  );
+}
+
+.signup-btn:active {
+  animation: submit-pulse 0.2s ease-in-out;
+  box-shadow: inset 5px 5px 10px #b9b8b8, inset -5px -5px 10px #dad7d7;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid var(--medium-gray);
+}
+
+.divider span {
+  padding: 0 10px;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.social-login {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.google-login,
+.linkedin-login {
+  background-color: #dbdbdb;
+  width: 100%;
+  border-radius: 0.5rem;
+  color: var(--text-color);
+  font-weight: 400;
+  cursor: pointer;
+  padding: 0.625rem;
+  border: 1px solid var(--medium-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s ease;
+  font-family: "Kanit", sans-serif;
+}
+
+.google-login:hover,
+.linkedin-login:hover {
+  background-color: #eeeeee;
+}
+
+.google-login:active,
+.linkedin-login:active {
+  animation: submit-pulse 0.2s ease-in-out;
+  box-shadow: inset 5px 5px 10px #b9b8b8, inset -5px -5px 10px #dad7d7;
+}
+
+.googleicon {
+  color: #db4437;
+}
+
+.linkedinicon {
+  color: #0077b5;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.login-link a {
+  color: var(--quaternary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+.user-type-selection {
+  margin: 1rem 0;
+}
+
+.user-type-selection p {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-color);
+}
+
+.user-type-options {
+  display: flex;
+  gap: 1rem;
+}
+
+.user-type-option {
+  flex: 1;
+}
+
+.user-type-option input[type="radio"] {
+  display: none;
+}
+
+.user-type-option label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--medium-gray);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.user-type-option input[type="radio"]:checked + label {
+  background: linear-gradient(
+    45deg,
+    rgba(244, 0, 124, 0.1),
+    rgba(169, 1, 242, 0.1)
+  );
+  border-color: var(--tertiary-color);
+  box-shadow: 0 0 5px rgba(169, 1, 242, 0.5);
+}
+
+.user-type-option label i {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--tertiary-color);
+}
+
+.terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  width: auto;
+  margin-top: 0.15rem;
+}
+
+.terms-checkbox label a {
+  color: var(--quaternary-color);
+  text-decoration: none;
+}
+
+.terms-checkbox label a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.signup-footer {
+  margin-top: auto;
+  width: 100%;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.footer-links a {
+  color: var(--tertiary-color);
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+/* International telephone input styling */
+.iti {
+  width: 100%;
+}
+
+.iti__flag-container {
+  height: 100%;
+}
+
+/* Animation */
+@keyframes submit-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.97);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Comprehensive Media Queries */
+/* Large Desktop */
+@media (min-width: 1200px) {
+  .signup-container {
+    max-width: 28rem;
+    padding: 2rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .signup-container {
+    max-width: 26rem;
+    padding: 1.75rem;
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .signup-container {
+    max-width: 24rem;
+    padding: 1.5rem;
+  }
+
+  .logo {
+    width: 16rem;
+  }
+}
+
+/* Large Mobile */
+@media (min-width: 576px) and (max-width: 767px) {
+  .signup-container {
+    max-width: 22rem;
+    padding: 1.25rem;
+    margin-top: 5rem;
+  }
+
+  .logo {
+    width: 14rem;
+  }
+
+  h2 {
+    font-size: 1.125rem;
+  }
+
+  h5 {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 575px) {
+  .signup-container {
+    max-width: 20rem;
+    padding: 1rem;
+    margin-top: 9rem;
+  }
+
+  .logo {
+    width: 12rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+
+  h5 {
+    font-size: 0.75rem;
+  }
+
+  input,
+  button {
+    padding: 0.8rem;
+
+    font-size: 0.8125rem;
+  }
+
+  .social-login {
+    gap: 0.5rem;
+  }
+
+  .user-type-options {
+    gap: 0.5rem;
+  }
+
+  .user-type-option label {
+    padding: 0.75rem;
+  }
+
+  .user-type-option label i {
+    font-size: 1.25rem;
+  }
+}
+
+/* Height-based Media Queries */
+@media (max-height: 600px) {
+  .signup-container {
+    padding: 1rem;
+    margin-top: 1%;
+  }
+
+  .form-group {
+    margin-bottom: 0.625rem;
+  }
+}

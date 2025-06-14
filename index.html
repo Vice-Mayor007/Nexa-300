@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MentorAI | AI-Powered Mentorship Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="mentor-ai-icon.png" type="image/x-icon">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <i class="fa-solid fa-bars navOpenBtn"></i>
+        <a class="logo">MentorAI</a>
+        <ul class="nav-links">
+            <i class="fa-solid fa-times navCloseBtn"></i>
+            <li><a class="navchi" href="#hero">Home</a></li>
+            <li><a class="navchi" href="#features">Features</a></li>
+            <li><a class="navchi" href="#use-cases">Use Cases</a></li>
+            <li><a class="navchi" href="#faq">FAQ</a></li>
+        </ul>
+        <a class="link-btn" href="signup.html">Sign Up</a>
+        <div id="progress-indicator" class="progress-indicator">
+            <div id="progress-indicator-fill" class="progress-indicator-fill"></div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main id="hero" class="hero-section">
+        <div class="hero-content">
+            <h1>Connect and learn from mentors with <span class="gradient-text">AI-powered assistance</span>.</h1>
+            
+            <p class="highlight">Empowering students with smart mentorship & career navigation</p>
+            <a href="signup.html"><button class="cta-button">Get Started</button></a>
+        </div>
+        <div class="hero-image">
+            <img src="mainimage.png" alt="MentorAI Platform" />
+        </div>
+    </main>
+
+    <div class="jumping-arrow">
+        <i class="fa-solid fa-angle-down"></i>
+    </div>
+
+    <!-- Why Choose Section -->
+    <section id="features" class="section-heading">
+        <h3>Why Choose MentorAI?</h3>
+        <h1>Navigate Your Career Journey with AI By Your Side</h1>
+    </section>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="card-content">
+                <i class="fa-solid fa-brain feature-icon"></i>
+                <h2 class="card-title">AI Career Advisor</h2>
+                <p class="card-text">Get personalized career guidance through our intelligent chatbot that understands your goals and aspirations.</p>
+            </div>
+        </div>
+        <div class="feature-card">
+            <div class="card-content">
+                <i class="fa-solid fa-road feature-icon"></i>
+                <h2 class="card-title">Learning Path Recommender</h2>
+                <p class="card-text">Discover courses, skills, and certifications tailored to your career goals and current knowledge level.</p>
+            </div>
+        </div>
+        <div class="feature-card">
+            <div class="card-content">
+                <i class="fa-solid fa-users feature-icon"></i>
+                <h2 class="card-title">Smart Mentor Matching</h2>
+                <p class="card-text">Connect with industry professionals and educators who match your interests, goals, and learning style.</p>
+            </div>
+        </div>
+        
+      
+       
+    </div>
+    <hr>
+    <!-- Use Cases Section -->
+    <section id="use-cases" class="section-heading">
+        <h3>Use Cases</h3>
+        <h1>How MentorAI Helps You Succeed</h1>
+    </section>
+
+    <div class="use-cases-grid">
+        <div class="use-case-card">
+            <div class="card-content">
+                <i class="fa-solid fa-graduation-cap use-case-icon"></i>
+                <h2 class="card-title">Students</h2>
+                <p class="card-text">Navigate academic decisions, discover career paths, and build essential skills with personalized guidance.</p>
+            </div>
+        </div>
+       
+        <div class="use-case-card">
+            <div class="card-content">
+                <i class="fa-solid fa-chalkboard-teacher use-case-icon"></i>
+                <h2 class="card-title">Mentors</h2>
+                <p class="card-text">Share your expertise, track your impact, and connect with students who will benefit most from your guidance.</p>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section">
+        <div class="section-heading">
+            <h3>Frequently Asked Questions</h3>
+            <h1>Got Questions? We've Got Answers</h1>
+        </div>
+        <ul class="faq-list">
+            <li>
+                <strong>What is MentorAI?</strong>
+                <div class="faq-answer">
+                    <p>MentorAI is an AI-powered platform designed to guide students in their academic and professional journeys. It connects you with mentors, offers personalized career advice, skill recommendations, and more.</p>
+                </div>
+            </li>
+            <li>
+                <strong>How does the AI mentor work?</strong>
+                <div class="faq-answer">
+                    <p>Our AI uses advanced machine learning to analyze your goals, strengths, and interests to provide tailored career paths, learning recommendations, and match you with suitable mentors and opportunities.</p>
+                </div>
+            </li>
+            <li>
+                <strong>Who are the mentors on the platform?</strong>
+                <div class="faq-answer">
+                    <p>Our mentors include industry professionals, educators, and career experts who have been vetted for their experience and commitment to helping students succeed in their chosen fields.</p>
+                </div>
+            </li>
+            <li>
+                <strong>Is my data secure?</strong>
+                <div class="faq-answer">
+                    <p>Absolutely! We use state-of-the-art encryption and follow strict data protection protocols to ensure your information remains private and secure.</p>
+                </div>
+            </li>
+            
+        </ul>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="year"></span> MentorAI. All Rights Reserved.</p>
+            <div class="social-icons">
+                <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript at the end of the body for optimized loading -->
+    <script>
+        // Current year for footer
+        document.getElementById('year').innerHTML = new Date().getFullYear();
+
+        // Navigation toggle for mobile
+        const nav = document.querySelector(".nav");
+        const navOpenBtn = document.querySelector(".navOpenBtn");
+        const navCloseBtn = document.querySelector(".navCloseBtn");
+
+        document.querySelectorAll('.navchi').forEach((link) => {
+            link.addEventListener('click', () => {
+                nav.classList.remove("openNav");
+                navOpenBtn.style.opacity = '1';
+            });
+        });
+
+        navOpenBtn.addEventListener("click", () => {
+            nav.classList.add("openNav");
+            navOpenBtn.style.opacity = '0';
+        });
+
+        navCloseBtn.addEventListener("click", () => {
+            nav.classList.remove("openNav");
+            navOpenBtn.style.opacity = '1';
+        });
+
+        // Scroll progress indicator
+        const progressIndicator = document.getElementById('progress-indicator-fill');
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY;
+            const documentHeight = document.body.offsetHeight;
+            const viewportHeight = window.innerHeight;
+            const progress = (scrollPosition / (documentHeight - viewportHeight)) * 100;
+
+            progressIndicator.style.width = `${progress}%`;
+            if (progress >= 50 && progress <= 80) {
+                progressIndicator.style.background = '#10B981';
+            } else if (progress >= 80 && progress <= 100) {
+                progressIndicator.style.background = '#4F46E5';
+            } else {
+                progressIndicator.style.background = '#6B7280';
+            }
+        });
+
+        // FAQ Toggle
+        document.querySelectorAll('.faq-list li').forEach(item => {
+            item.querySelector('strong').addEventListener('click', () => {
+                const answer = item.querySelector('.faq-answer');
+                answer.classList.toggle('active');
+            });
+        });
+
+        // Typing effect
+        const initTypeWriter = () => {
+            const text = "Join thousands of students who are accelerating their careers with AI-powered mentorship.";
+            const typingText = document.getElementById('typingText');
+            
+            if (!typingText) return;
+            
+            let index = 0;
+            
+            const type = () => {
+                if (index < text.length) {
+                    typingText.textContent += text.charAt(index);
+                    index++;
+                    setTimeout(type, 50);
+                }
+            };
+            
+            type();
+        };
+        
+        // Initialize typing effect when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initTypeWriter);
+    </script>
+</body>
+</html>

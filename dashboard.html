@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MentorAI | Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+    <style>
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            padding: 20px;
+        }
+
+        .course-card {
+            background: rgba(255, 255, 255, 0.555);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .course-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .course-icon {
+            width: 50px;
+            height: 50px;
+            background: #f4007a18;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+        }
+
+        .course-icon i {
+            font-size: 24px;
+            color: #f4007a;
+        }
+
+        .course-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .course-description {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .course-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .course-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .learn-btn {
+            background: #f4007a;
+            color: white;
+        }
+
+        .learn-btn:hover {
+            background: #d4006a;
+        }
+
+        .ai-btn {
+            background: #f4007a18;
+            color: #f4007a;
+        }
+
+        .ai-btn:hover {
+            background: #f4007a2a;
+        }
+
+        .ai-chat-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #4a5568;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background: #f4007a18;
+            margin-left: auto;
+        }
+
+        .ai-message {
+            background: #f8fafc;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .chat-input button {
+            padding: 12px 24px;
+            background: #f4007a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .chat-input button:hover {
+            background: #d4006a;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px;
+            background: white;
+            border-radius: 16px;
+            margin: 20px;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #f4007a;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            color: #4a5568;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .learning-resources {
+            padding: 20px;
+        }
+
+        .resource-section {
+            margin-bottom: 40px;
+        }
+
+        .resource-section h3 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .video-grid, .website-grid, .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .video-card, .website-card, .resource-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .video-card:hover, .website-card:hover, .resource-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(244, 0, 122, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
+
+        .website-icon, .resource-icon {
+            width: 40px;
+            height: 40px;
+            background: #f4007a18;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            color: #f4007a;
+        }
+
+        .watch-btn, .visit-btn, .download-btn {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            background: #f4007a;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            text-decoration: none;
+        }
+
+        .watch-btn:hover, .visit-btn:hover, .download-btn:hover {
+            background: #d4006a;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 40px;
+            color: #e53e3e;
+        }
+
+        .error-message i {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: #4a5568;
+        }
+
+        .loading-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #f4007a;
+        }
+
+        .overview-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .overview-content p {
+            line-height: 1.6;
+            color: #2d3748;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3 class="logo">MentorAI</h3>
+                <i class="fa-solid fa-times sidebar-close" id="sidebar-close"></i>
+            </div>
+            <div class="sidebar-user">
+                <div class="user-avatar">
+                    <img src="https://ui-avatars.com/api/?name=User&background=random" alt="User Avatar" id="user-avatar">
+                </div>
+                <div class="user-info">
+                    <h4 id="user-name">Loading...</h4>
+                    <p id="user-role">Loading...</p>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a href="/dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="/my-mentors"><i class="fa-solid fa-users"></i> My Mentors</a>
+                </li>
+                <li>
+                    <a href="/ai-chat"><i class="fa-solid fa-robot"></i> AI Assistant</a>
+                </li>
+                <li>
+                    <a href="/settings"><i class="fa-solid fa-gear"></i> Settings</a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="/logout"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Top Navigation -->
+            <header class="top-navbar">
+                <div class="nav-left">
+                    <i class="fa-solid fa-bars sidebar-toggle" id="sidebar-toggle"></i>
+                    <h2>My Learning Dashboard</h2>
+                </div>
+                <div class="nav-right">
+                    <div class="notification-bell">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-count" id="notification-count">0</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h1>Welcome back, <span id="welcome-user-name">Student</span>!</h1>
+                    <p>Track your learning progress and continue your journey</p>
+                </div>
+
+                <!-- Course Grid -->
+                <div class="course-grid" id="courseGrid">
+                    <!-- Course cards will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chat Modal -->
+    <div class="ai-chat-modal" id="aiChatModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">AI Learning Assistant</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai-message">
+                    Hello! I'm your AI learning assistant. How can I help you learn more about this course?
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="userInput" placeholder="Ask me anything about the course...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Learning Modal -->
+    <div class="ai-chat-modal" id="courseLearningModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="learningModalTitle">Course: </h3>
+                <button class="close-modal" onclick="closeLearningModal()">&times;</button>
+            </div>
+            <div class="learning-content">
+                <div class="learning-tabs">
+                    <button class="tab-button active" onclick="changeTab('overview')">Overview</button>
+                    <button class="tab-button" onclick="changeTab('resources')">Resources</button>
+                    <button class="tab-button" onclick="changeTab('progress')">My Progress</button>
+                    <button class="tab-button" onclick="changeTab('notes')">Notes</button>
+                </div>
+                <div class="tab-content" id="overview-tab">
+                    <div class="course-description-full">
+                        <p id="course-overview-text">Loading course overview...</p>
+                    </div>
+                    <div class="course-sections" id="course-sections-list">
+                        <h4>Course Sections</h4>
+                        <ul class="section-list">
+                            <li>Loading sections...</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-content" id="resources-tab" style="display: none;">
+                    <div class="resources-search">
+                        <h4>Online Resources</h4>
+                        <div class="resource-links" id="resource-links-list">
+                            <div class="resource-loading">
+                                <i class="fa-solid fa-spinner fa-spin"></i> Loading resources...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content" id="progress-tab" style="display: none;">
+                    <div class="progress-stats">
+                        <div class="progress-card">
+                            <h4>Overall Progress</h4>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" id="overall-progress" style="width: 0%;">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="completed-items">
+                        <h4>Completed Sections</h4>
+                        <ul id="completed-sections-list">
+                            <li>No completed sections yet</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-content" id="notes-tab" style="display: none;">
+                    <div class="notes-container">
+                        <h4>My Course Notes</h4>
+                        <div class="notes-editor">
+                            <textarea id="course-notes" placeholder="Take notes while you learn..."></textarea>
+                            <button onclick="saveNotes()" class="notes-save-btn">Save Notes</button>
+                        </div>
+                        <div class="saved-notes" id="saved-notes-list">
+                            <p>No saved notes yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar Toggle
+        document.getElementById('sidebar-toggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        document.getElementById('sidebar-close').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('active');
+        });
+
+        // Load user profile and courses
+        async function loadUserProfile() {
+            try {
+                const response = await fetch('/api/user/profile', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('user-name').textContent = data.user.username;
+                    document.getElementById('welcome-user-name').textContent = data.user.username;
+                    document.getElementById('user-role').textContent = data.user.role;
+                    document.getElementById('user-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.username)}&background=random`;
+                    
+                    if (data.user.courses && data.user.courses.length > 0) {
+                        displayCourses(data.user.courses);
+                    } else {
+                        showEmptyState();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading user profile:', error);
+                showEmptyState();
+            }
+        }
+
+        function showEmptyState() {
+            const courseGrid = document.getElementById('courseGrid');
+            courseGrid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-solid fa-book-open"></i>
+                    <h3>No Courses Yet</h3>
+                    <p>Start your learning journey by enrolling in courses</p>
+                    <button onclick="window.location.href='/courses'" class="primary-btn">Browse Courses</button>
+                </div>
+            `;
+        }
+
+        function displayCourses(courses) {
+            const courseGrid = document.getElementById('courseGrid');
+            courseGrid.innerHTML = courses.map(course => `
+                <div class="course-card">
+                    <div class="course-header">
+                        <div class="course-icon">
+                            <i class="fa-solid fa-book"></i>
+                        </div>
+                        <h3 class="course-title">${course.title}</h3>
+                    </div>
+                    <p class="course-description">${course.description}</p>
+                    <div class="course-actions">
+                        <button class="course-btn learn-btn" onclick="startLearning('${course.id}')">
+                            <i class="fa-solid fa-play"></i> Continue Learning
+                        </button>
+                        <button class="course-btn ai-btn" onclick="openAIChat('${course.id}')">
+                            <i class="fa-solid fa-robot"></i> Ask AI
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Modal Functions
+        function openLearningModal(courseId) {
+            const modal = document.getElementById('courseLearningModal');
+            modal.style.display = 'flex';
+            loadCourseDetails(courseId);
+        }
+
+        function closeLearningModal() {
+            const modal = document.getElementById('courseLearningModal');
+            modal.style.display = 'none';
+        }
+
+        function openAIChat(courseId) {
+            const modal = document.getElementById('aiChatModal');
+            modal.style.display = 'flex';
+            currentCourseId = courseId;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('aiChatModal');
+            modal.style.display = 'none';
+        }
+
+        // Tab Functions
+        function changeTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-button');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.style.display = 'none');
+            
+            document.querySelector(`[onclick="changeTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).style.display = 'block';
+        }
+
+        // Course Details Loading
+        async function loadCourseDetails(courseId) {
+            try {
+                const response = await fetch(`/api/courses/${courseId}`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('learningModalTitle').textContent = `Course: ${data.course.title}`;
+                    document.getElementById('course-overview-text').textContent = data.course.description;
+                    
+                    // Load sections
+                    const sectionsList = document.getElementById('course-sections-list');
+                    sectionsList.innerHTML = data.course.sections.map(section => `
+                        <li>
+                            <i class="fa-solid fa-circle-check"></i>
+                            ${section.title}
+                        </li>
+                    `).join('');
+                    
+                    // Load progress
+                    const progress = data.course.progress || 0;
+                    document.getElementById('overall-progress').style.width = `${progress}%`;
+                    document.getElementById('overall-progress').textContent = `${progress}%`;
+                }
+            } catch (error) {
+                console.error('Error loading course details:', error);
+            }
+        }
+
+        // Notes Functions
+        function saveNotes() {
+            const notes = document.getElementById('course-notes').value;
+            const savedNotesList = document.getElementById('saved-notes-list');
+            
+            if (notes.trim()) {
+                const timestamp = new Date().toLocaleString();
+                savedNotesList.innerHTML += `
+                    <div class="note-item">
+                        <p>${notes}</p>
+                        <small>${timestamp}</small>
+                    </div>
+                `;
+                document.getElementById('course-notes').value = '';
+            }
+        }
+
+        function startLearning(course) {
+            const modal = document.getElementById('courseLearningModal');
+            modal.style.display = 'flex';
+            
+            // Show loading state
+            document.querySelector('.learning-content').innerHTML = `
+                <div class="loading-state">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <p>Loading learning resources...</p>
+                </div>
+            `;
+
+            // Use AI to generate learning resources
+            generateLearningResources(course);
+        }
+
+        async function generateLearningResources(course) {
+            try {
+                // First message to AI to get course overview
+                const overviewResponse = await fetch('/ai/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Generate a comprehensive learning plan for ${course}. Include: 
+                        1. A brief overview of the course
+                        2. Key topics to cover
+                        3. Recommended YouTube video links
+                        4. Useful websites for learning
+                        5. Additional resources
+                        Format the response in JSON with these sections.`
+                    }),
+                    credentials: 'include'
+                });
+
+                const overviewData = await overviewResponse.json();
+                if (!overviewData.success) {
+                    throw new Error('Failed to generate course overview');
+                }
+
+                // Parse the AI response
+                let courseData;
+                try {
+                    // Try to parse the response as JSON
+                    courseData = JSON.parse(overviewData.response);
+                } catch (e) {
+                    // If parsing fails, create a structured object from the text
+                    courseData = {
+                        overview: overviewData.response,
+                        topics: [],
+                        videos: [],
+                        websites: [],
+                        resources: []
+                    };
+                }
+
+                // Create the learning resources content
+                const resourcesContent = `
+                    <div class="learning-resources">
+                        <div class="resource-section">
+                            <h3><i class="fa-solid fa-book"></i> Course Overview</h3>
+                            <div class="overview-content">
+                                <p>${courseData.overview || 'Loading overview...'}</p>
+                            </div>
+                        </div>
+
+                        <div class="resource-section">
+                            <h3><i class="fa-brands fa-youtube"></i> Video Tutorials</h3>
+                            <div class="video-grid">
+                                ${courseData.videos ? courseData.videos.map(video => `
+                                    <div class="video-card">
+                                        <div class="video-thumbnail">
+                                            <img src="https://img.youtube.com/vi/${video.id}/maxresdefault.jpg" 
+                                                 alt="${video.title}"
+                                                 onerror="this.src='https://img.youtube.com/vi/${video.id}/hqdefault.jpg'">
+                                            <div class="play-button">
+                                                <i class="fa-solid fa-play"></i>
+                                            </div>
+                                        </div>
+                                        <h4>${video.title}</h4>
+                                        <p>${video.description || ''}</p>
+                                        <button onclick="playVideo('https://www.youtube.com/watch?v=${video.id}')" class="watch-btn">
+                                            <i class="fa-solid fa-play"></i> Watch Now
+                                        </button>
+                                    </div>
+                                `).join('') : '<p>No videos available yet</p>'}
+                            </div>
+                        </div>
+
+                        <div class="resource-section">
+                            <h3><i class="fa-solid fa-globe"></i> Learning Websites</h3>
+                            <div class="website-grid">
+                                ${courseData.websites ? courseData.websites.map(site => `
+                                    <div class="website-card">
+                                        <div class="website-icon">
+                                            <i class="fa-solid fa-link"></i>
+                                        </div>
+                                        <h4>${site.title}</h4>
+                                        <p>${site.description || ''}</p>
+                                        <a href="${site.url}" target="_blank" class="visit-btn">
+                                            <i class="fa-solid fa-external-link-alt"></i> Visit Website
+                                        </a>
+                                    </div>
+                                `).join('') : '<p>No websites available yet</p>'}
+                            </div>
+                        </div>
+
+                        <div class="resource-section">
+                            <h3><i class="fa-solid fa-lightbulb"></i> Additional Resources</h3>
+                            <div class="resources-grid">
+                                ${courseData.resources ? courseData.resources.map(resource => `
+                                    <div class="resource-card">
+                                        <div class="resource-icon">
+                                            <i class="fa-solid fa-file-alt"></i>
+                                        </div>
+                                        <h4>${resource.title}</h4>
+                                        <p>${resource.description || ''}</p>
+                                        <button onclick="window.open('${resource.url}', '_blank')" class="download-btn">
+                                            <i class="fa-solid fa-external-link-alt"></i> Access Resource
+                                        </button>
+                                    </div>
+                                `).join('') : '<p>No additional resources available yet</p>'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Update the modal content
+                document.querySelector('.learning-content').innerHTML = resourcesContent;
+
+            } catch (error) {
+                console.error('Error generating learning resources:', error);
+                document.querySelector('.learning-content').innerHTML = `
+                    <div class="error-message">
+                        <i class="fa-solid fa-exclamation-circle"></i>
+                        <p>Failed to generate learning resources. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function playVideo(videoUrl) {
+            window.open(videoUrl, '_blank');
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', loadUserProfile);
+    </script>
+</body>
+</html> 

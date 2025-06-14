@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MentorAI | Mentor Matching</title>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            rel="stylesheet">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;500;600;700;800;900&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="dashboard.css">
+        <link rel="shortcut icon" href="mentor-ai-icon.png" type="image/x-icon">
+        <style>
+        /* Additional styles specific to mentor matching */
+        .filter-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e1e1e1;
+            background-color: white;
+        }
+        
+        .mentor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .mentor-card {
+            background: white;
+            border-radius: 16px;
+         
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        
+        .mentor-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .mentor-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin-right: 20px;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .mentor-card:hover .mentor-avatar {
+            transform: scale(1.05);
+        }
+        
+        .mentor-name-role {
+            flex: 1;
+        }
+        
+        .mentor-name {
+            font-weight: 700;
+            font-size: 20px;
+            margin: 0;
+            color: #2d3748;
+            letter-spacing: -0.5px;
+        }
+        
+        .mentor-role {
+            color: #718096;
+            font-size: 14px;
+            margin: 4px 0 0;
+            font-weight: 500;
+        }
+        
+        .mentor-info {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+        
+        .mentor-info p {
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            color: #4a5568;
+            font-size: 14px;
+        }
+        
+        .mentor-info i {
+            margin-right: 12px;
+            width: 20px;
+            color: #3a86ff;
+            font-size: 16px;
+        }
+        
+        .mentor-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .skill-tag {
+            background: #f4007a18;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: rgb(0, 0, 0);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+        
+            
+            transition: all 0.3s ease;
+        }
+
+        
+        .mentor-actions {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px;
+            background:  #25D366;
+            color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 300;
+            transition: all 0.3s ease;
+           
+        }
+
+        
+        .whatsapp-btn i {
+            margin-right: 10px;
+            font-size: 1.3em;
+        }
+
+        .no-contact {
+            color: #718096;
+            text-align: center;
+            font-style: italic;
+            padding: 14px;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-state i {
+            font-size: 56px;
+            color: #3a86ff;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .empty-state p {
+            color: #4a5568;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 48px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .error-message i {
+            font-size: 56px;
+            color: #e53e3e;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .error-message p {
+            color: #4a5568;
+            font-size: 16px;
+            margin: 0;
+        }
+        
+        .rating {
+            display: flex;
+            align-items: center;
+        }
+        
+        .rating-stars {
+            color: #FFD700;
+            margin-right: 5px;
+        }
+        
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0, #e0e0e0, #f0f0f0);
+            background-size: 200% 100%;
+            animation: loading 2.5s infinite;
+            border-radius: 4px;
+        }
+        
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .ai-button {
+            background: linear-gradient(135deg, #3a86ff, #8338ec);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .ai-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(58, 134, 255, 0.2);
+        }
+
+        .ai-button:active {
+            transform: translateY(0);
+        }
+
+        .ai-button i {
+            font-size: 1.2em;
+        }
+
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Footer styles */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .dashboard-content {
+            flex: 1;
+            padding: 20px;
+            padding-bottom: 80px; /* Space for footer */
+        }
+
+        .course-search-section {
+            background: rgba(255, 255, 255, 0.555);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+          
+            padding: 20px;
+            border-radius: 9px;
+          
+            margin-bottom: 30px;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .course-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 100%;
+        }
+        .course-input:focus {
+            outline: none;
+            border-color: #3a86ff;
+         
+        }
+
+        .search-btn {
+            background: #3a86ff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #2e75e0;
+        }
+
+        .popular-courses {
+            margin-top: 15px;
+        }
+
+        .popular-courses h3 {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .course-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .course-tag {
+            background: #f0f7ff;
+            color: #3a86ff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .course-tag:hover {
+            background: #3a86ff;
+            color: white;
+        }
+
+        .search-section {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .search-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .search-button:hover {
+            background-color: #45a049;
+        }
+
+        .filter-section {
+            background: rgba(255, 255, 255, 0.555);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 9px;
+            margin-bottom: 30px;
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .filter-header h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .reset-btn {
+            background: #f0f7ff;
+            color: #3a86ff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .reset-btn:hover {
+            background: #e0ecff;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            background-color: white;
+            font-size: 14px;
+        }
+
+        .mentor-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .view-profile-btn {
+            background: #f0f7ff;
+            color: #3a86ff;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .view-profile-btn:hover {
+            background: #e0ecff;
+        }
+
+        .save-mentor-btn {
+            background: #fff;
+            color: #666;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .save-mentor-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .save-mentor-btn.saved {
+            background: #fff3e0;
+            color: #ff9800;
+            border-color: #ff9800;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3a86ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    </head>
+
+    <body>
+        <div class="dashboard-container">
+            <!-- Sidebar Navigation -->
+            <nav class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <h3 class="logo">MentorAI</h3>
+                    <i class="fa-solid fa-times sidebar-close"
+                        id="sidebar-close"></i>
+                </div>
+                <div class="sidebar-user">
+                    <div class="user-avatar">
+                        <img
+                            src="https://ui-avatars.com/api/?name=User&background=random&color=fff"
+                            alt="User Avatar">
+                    </div>
+                    <div class="user-info">
+                        <h4 id="user-name">Loading...</h4>
+                        <p id="user-role">Loading...</p>
+                    </div>
+                </div>
+                <ul class="sidebar-menu">
+                    <li>
+                        <a href="/dashboard"><i
+                                class="fa-solid fa-gauge-high"></i>
+                            Dashboard</a>
+                    </li>
+
+                    <li class="active">
+                        <a href="/my-mentors"><i class="fa-solid fa-users"></i>
+                            My Mentors</a>
+                    </li>
+
+                    <li>
+                        <a href="/ai-chat"><i class="fa-solid fa-robot"></i> AI
+                            Assistant</a>
+                    </li>
+
+                </ul>
+                <div class="sidebar-footer">
+                    <a href="#help"><i class="fa-solid fa-circle-question"></i>
+                        Help Center</a>
+                    <a href="/logout"><i class="fa-solid fa-sign-out-alt"></i>
+                        Logout</a>
+                </div>
+            </nav>
+
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <!-- Top Navigation -->
+                <header class="top-navbar">
+                    <div class="nav-left">
+                        <i class="fa-solid fa-bars sidebar-toggle"
+                            id="sidebar-toggle"></i>
+                        <h2>Mentor Matching</h2>
+                    </div>
+                    <div class="nav-right">
+                        <div class="search-box">
+                            <i class="fa-solid fa-search"></i>
+                            <input type="text" placeholder="Search mentors...">
+                        </div>
+                        <div class="notification-bell">
+                            <i class="fa-solid fa-bell"></i>
+                            <span class="notification-count"
+                                id="notification-count">3</span>
+                        </div>
+                        <div class="message-inbox">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span class="message-count"
+                                id="message-count">5</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Dashboard Content -->
+                <div class="dashboard-content">
+                    <!-- Mentor Matching Section -->
+                    <section class="welcome-section">
+                        <div class="welcome-card">
+                            <div class="welcome-text">
+                                <h1>Find Your Perfect Mentor</h1>
+                                <p>Browse our curated list of industry
+                                    professionals and academic experts ready to
+                                    guide you on your journey.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Mentors Grid -->
+                    <section class="mentors-section">
+                        <div class="section-header">
+                            <h2>Available Mentors</h2>
+                        </div>
+
+                        <!-- Course Search Section -->
+                        <div class="course-search-section">
+                            <div class="search-container">
+                                <input type="text" id="course-search"
+                                    placeholder="Enter course name (e.g., Python, JavaScript, Data Science)"
+                                    class="course-input">
+                                <button id="search-courses" class="search-btn">
+                                    <i class="fa-solid fa-search"></i> Search
+                                </button>
+                            </div>
+                            <div class="popular-courses">
+                                <h3>Popular Courses:</h3>
+                                <div class="course-tags">
+                                    <span class="course-tag"
+                                        data-course="Python">Python</span>
+                                    <span class="course-tag"
+                                        data-course="JavaScript">JavaScript</span>
+                                    <span class="course-tag"
+                                        data-course="Data Science">Data
+                                        Science</span>
+                                    <span class="course-tag"
+                                        data-course="Web Development">Web
+                                        Development</span>
+                                    <span class="course-tag"
+                                        data-course="Machine Learning">Machine
+                                        Learning</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="mentor-list" class="mentor-grid">
+                            <!-- Mentor cards will be dynamically inserted here -->
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Footer -->
+                <footer class="dashboard-footer">
+                    <div class="footer-content">
+                        <p>&copy; <span id="year"></span> MentorAI. All Rights
+                            Reserved.</p>
+                        <div class="footer-links">
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Terms of Service</a>
+                            <a href="#">Contact Support</a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        </body>
+
+
+        <script>
+  // Set current year in footer
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Get DOM elements
+  const mentorList = document.getElementById("mentor-list");
+  const courseSearch = document.getElementById('course-search');
+  const searchCoursesBtn = document.getElementById('search-courses');
+  const courseTags = document.querySelectorAll('.course-tag');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  const sidebarClose = document.getElementById('sidebar-close');
+  const userName = document.getElementById('user-name');
+  const userRole = document.getElementById('user-role');
+
+  // Load user profile information
+  const loadUserProfile = async () => {
+    try {
+      const response = await fetch("/api/user/profile", {
+        method: "GET",
+        credentials: "include"
+      });
+      const data = await response.json();
+
+      if (data.success && data.user) {
+        // Update user name and role in sidebar
+        userName.textContent = data.user.username;
+        userRole.textContent = data.user.role.charAt(0).toUpperCase() + data.user.role.slice(1);
+      } else {
+        console.error("Failed to load user profile");
+      }
+    } catch (err) {
+      console.error("Error loading user profile:", err);
+    }
+  };
+
+  // Show loading skeletons placeholder
+  const showSkeletons = (count = 6) => {
+    mentorList.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const mentorCard = document.createElement('div');
+      mentorCard.className = 'mentor-card';
+      mentorCard.innerHTML = `
+        <div class="mentor-header">
+          <div class="skeleton" style="width: 60px; height: 60px; border-radius: 50%;"></div>
+          <div class="mentor-name-role">
+            <div class="skeleton" style="height: 20px; width: 70%; margin-bottom: 8px;"></div>
+            <div class="skeleton" style="height: 16px; width: 50%;"></div>
+          </div>
+        </div>
+        <div class="mentor-info">
+          <div class="skeleton" style="height: 16px; width: 90%; margin-bottom: 8px;"></div>
+          <div class="skeleton" style="height: 16px; width: 80%; margin-bottom: 8px;"></div>
+          <div class="skeleton" style="height: 16px; width: 85%;"></div>
+        </div>
+        <div class="mentor-skills">
+          <div class="skeleton" style="height: 24px; width: 70px; border-radius: 20px; margin-right: 8px;"></div>
+          <div class="skeleton" style="height: 24px; width: 90px; border-radius: 20px; margin-right: 8px;"></div>
+          <div class="skeleton" style="height: 24px; width: 80px; border-radius: 20px;"></div>
+        </div>
+        <div class="mentor-actions">
+          <div class="skeleton" style="height: 36px; width: 100%;"></div>
+        </div>
+      `;
+      mentorList.appendChild(mentorCard);
+    }
+  };
+
+  // Load mentors based on user profile
+  const loadMentors = async () => {
+    showSkeletons();
+
+    try {
+      const response = await fetch("/findmentors", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include"
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.mentors) {
+        renderMentors(data.mentors);
+      } else {
+        mentorList.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-user-slash"></i>
+            <p>${data.message || 'No mentors found.'}</p>
+          </div>
+        `;
+      }
+    } catch (err) {
+      console.error("Error loading mentors:", err);
+      mentorList.innerHTML = `
+        <div class="error-message">
+          <i class="fa-solid fa-exclamation-circle"></i>
+          <p>Failed to load mentors. Please try again later.</p>
+        </div>
+      `;
+    }
+  };
+
+  // Render mentor cards to the DOM
+  const renderMentors = (mentors) => {
+    mentorList.innerHTML = '';
+
+    if (mentors.length === 0) {
+      mentorList.innerHTML = `
+        <div class="empty-state">
+          <i class="fa-solid fa-user-slash"></i>
+          <p>No mentors found matching your profile.</p>
+        </div>
+      `;
+      return;
+    }
+
+    mentors.forEach(mentor => {
+      const mentorCard = document.createElement('div');
+      mentorCard.className = 'mentor-card';
+
+      mentorCard.innerHTML = `
+        <div class="mentor-header">
+          <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(mentor.username)}&background=random" 
+               alt="${mentor.username}" 
+               class="mentor-avatar">
+          <div class="mentor-name-role">
+            <h3 class="mentor-name">${mentor.username}</h3>
+            <p class="mentor-role">Mentor</p>
+          </div>
+        </div>
+        <div class="mentor-info">
+          <p><i class="fa-solid fa-envelope"></i> ${mentor.email}</p>
+        </div>
+        <div class="mentor-skills">
+          ${mentor.courses.map(course => `<span class="skill-tag">${course}</span>`).join('')}
+        </div>
+        <div class="mentor-actions">
+          ${mentor.contact && mentor.contact.length > 0 ? `
+            <a href="https://wa.me/${mentor.contact[0]}" target="_blank" class="whatsapp-btn">
+              <i class="fab fa-whatsapp"></i> Message on WhatsApp
+            </a>
+          ` : `
+            <p class="no-contact">Contact information not available</p>
+          `}
+        </div>
+      `;
+
+      mentorList.appendChild(mentorCard);
+    });
+  };
+
+  // Search mentors by course name
+  const searchMentorsByCourse = async (course) => {
+    if (!course) return;
+
+    showSkeletons();
+
+    try {
+      const response = await fetch("/search-mentors", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ searchQuery: course }),
+        credentials: "include"
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.mentors) {
+        renderMentors(data.mentors);
+      } else {
+        mentorList.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-user-slash"></i>
+            <p>${data.message || 'No mentors found for this course.'}</p>
+          </div>
+        `;
+      }
+    } catch (err) {
+      console.error("Error searching mentors:", err);
+      mentorList.innerHTML = `
+        <div class="error-message">
+          <i class="fa-solid fa-exclamation-circle"></i>
+          <p>Failed to search mentors. Please try again later.</p>
+        </div>
+      `;
+    }
+  };
+
+  // Sidebar toggle handlers
+  sidebarToggle?.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+  });
+
+  sidebarClose?.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+  });
+
+  // Search button click and Enter key on input
+  searchCoursesBtn?.addEventListener('click', () => {
+    const course = courseSearch.value.trim();
+    if (course) searchMentorsByCourse(course);
+  });
+
+  courseSearch?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const course = courseSearch.value.trim();
+      if (course) searchMentorsByCourse(course);
+    }
+  });
+
+  // Course tag clicks
+  courseTags.forEach(tag => {
+    tag.addEventListener('click', () => {
+      const course = tag.dataset.course;
+      courseSearch.value = course;
+      searchMentorsByCourse(course);
+    });
+  });
+
+  // Load mentors on page load
+  window.addEventListener("DOMContentLoaded", () => {
+    loadUserProfile();
+    loadMentors();
+  });
+</script>
+
+</html>
+
+       
